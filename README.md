@@ -31,7 +31,7 @@ From now on, you would be able to start or stop the project with `ddev start` an
 
 ## Usage
 
-Once installed and running, by default, you would be able to play the game in your local machine at https://cuatroenlinea.ddev.site/jugar/1.
+Once installed and running, by default, you would be able to play the game in your local machine at http://cuatroenlinea.ddev.site/jugar/1.
 
 Note that the last number in the url represents the alternated sequence of movements made by the two players, and you have to have *at least* one number in the sequence for the game to work. So for example, if the url ends with `/jugar/6`, the game will start with a red token placed at the bottom of the 6th column (counting from the left).
 
@@ -47,3 +47,12 @@ To make a new movement, move your mouse above the column where the corresponding
 <p align="center"><img width="50%" src="https://user-images.githubusercontent.com/68936651/172038672-89aa871b-a590-493a-83a5-4a0aee45ea9e.png" /></p>
 
 **Currently, there's no feedback when a player wins (i.e. manages to connect four tokens by placing them adjacently in a row, column or diagonal)** (to be added soon).
+
+## Common issues
+
+You may run into a warning similar like the following one when navigating to the default url:
+
+<p align="center"><img style="width: 60%;" src="https://user-images.githubusercontent.com/68936651/172041595-4fe20019-8a34-45a7-ba03-a698b0faa6d6.png" /></p>
+
+If that's the case, it's possible that your browser may have redirected you to **https**://cuatroenlinea... instead of **http**://cuatroenlinea...
+You can easily solve this typing the link again, but be sure to type it entirely (i.e. be sure to type "http://" at the start of the url). Or, of course, you could just click the link mentioned before, if you're reading this from the same machine you've installed Connect Four.
