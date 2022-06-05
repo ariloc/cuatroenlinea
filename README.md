@@ -44,6 +44,6 @@ Otherwise, if the link were to end with `/jugar/1234567`, the tokens would be pl
 
 To make a new movement, move your mouse above the column where the corresponding player wants to place a new token in. This will show you a spinning wheel-like shape, colored red or light blue, depending on whether it's the first or second player's turn. As expected, clicking it will place a token in that column, thus leading you to the updated website with a new number in the sequence.
 
-<p align="center"><img width="30%" src="https://user-images.githubusercontent.com/68936651/172038672-89aa871b-a590-493a-83a5-4a0aee45ea9e.png" /></p>
+<p align="center"><img width="50%" src="https://user-images.githubusercontent.com/68936651/172038672-89aa871b-a590-493a-83a5-4a0aee45ea9e.png" /></p>
 
 **Currently, there's no feedback when a player wins (i.e. manages to connect four tokens by placing them adjacently in a row, column or diagonal)** (to be added soon).
