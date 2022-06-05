@@ -1,64 +1,49 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Connect Four
+
+This project is about learning how to properly document, mantain, fix, develop and test software, using git for version control and GitHub to not only host that code, but to also try out other features it has, such as automatically testing code in commits. I'll also be learning how to use Laravel, a widely used PHP web framework, which the mentioned project runs on.
+
+To achieve that, I'll be working from a simple implementation of the well known Connect Four game, given the hypothetical scenario where the previous dev quit without notice. This makes it so that I have to understand the already written code, find out and document how to set up the website where the game lies in, create automated tests to help keep functionality as originally intended, restructure the code to make it more readable and maintainable, and add new features to meet the requirements of the (also hypothetical) employer.
+
+Carried out as part of the subject "Adaptación al Ambiente de Trabajo" (AAE), Instituto Politécnico Superior (6to INFO, 2022).
+
+## Dependencies
+
+This project uses [ddev](https://github.com/drud/ddev) to get it running. It contains all the components required for the installation, so there are no other dependencies.
+
+For more info and instructions on how to install it, check out its [documentation](https://ddev.readthedocs.io/en/stable/).
+
+## Installation
+
+Clone the repository as you normally would, and start the project with ddev inside the new directory.
+
+Apart from that, you'll only have to set up your environment by renaming the provided `.env.example` file to `.env` and generating an encryption key. The file is provided this way in case you may want to modify it according to your needs (see the [Laravel documentation](https://laravel.com/docs/9.x/configuration#environment-configuration) for more info). But if you just want to run it quickly, simply copy the file as shown and it should work just fine.
+
+```shell
+# Start the project
+ddev start
+# Copy the example .env file, you can then modify it as you wish
+cp .env.example .env
+# Generate a key for encryption
+ddev php artisan key:generate
+```
+
+From now on, you would be able to start or stop the project with `ddev start` and `ddev stop` respectively.
+
+## Usage
+
+Once installed and running, by default, you would be able to play the game in your local machine at https://cuatroenlinea.ddev.site/jugar/1.
+
+Note that the last number in the url represents the alternated sequence of movements made by the two players, and you have to have *at least* one number in the sequence for the game to work. So for example, if the url ends with `/jugar/6`, the game will start with a red token placed at the bottom of the 6th column (counting from the left).
+
+Otherwise, if the link were to end with `/jugar/1234567`, the tokens would be placed in the following way: the first player placed a token in the first column, the second player placed a token in the second column, the first player placed a token in the third column, and so on.
 
 <p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+    <img style="width: 30%;" src="https://user-images.githubusercontent.com/68936651/172038260-1ebc224e-162d-4564-a9aa-6cbd07bd8388.png" />
+    <img style="width: 30%;" src="https://user-images.githubusercontent.com/68936651/172038300-7c9e1400-4ae8-4281-9bab-6b83111ca422.png" />
 </p>
 
-## About Laravel
+To make a new movement, move your mouse above the column where the corresponding player wants to place a new token in. This will show you a spinning wheel-like shape, colored red or light blue, depending on whether it's the first or second player's turn. As expected, clicking it will place a token in that column, thus leading you to the updated website with a new number in the sequence.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center"><img width="30%" src="https://user-images.githubusercontent.com/68936651/172038672-89aa871b-a590-493a-83a5-4a0aee45ea9e.png" /></p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Currently, there's no feedback when a player wins (i.e. manages to connect four tokens by placing them adjacently in a row, column or diagonal)** (to be added soon).
