@@ -7,7 +7,7 @@ use App\Execeptions;
 
 interface BoardInterface {
 	public function throwPiece (Piece $piece, int $col) : bool;
-	public function getPiece (int $col, int $row) : Piece;
+	public function getPiece (int $col, int $row); // can return Piece or NULL
 	public function clean() : void;
 }
 
@@ -32,7 +32,7 @@ class Board implements BoardInterface {
 	 * Returns true is done correctly. Returns false if column is full.
      */
 	public function throwPiece (Piece $piece, int $col) : bool {
-		$col--; // To 0-indexed.
+		$col--; // 1-indexed to 0-indexed
 		if ($col < 0 || $col >= $this->dim_x)
 			throw new \Exception('Column index out of range.');
 
@@ -47,9 +47,9 @@ class Board implements BoardInterface {
      * Gets the Piece object in column $col and row $row.
 	 * If no piece exists in that position, returns NULL.
      */
-	public function getPiece (int $col, int $row) : Piece {
-		$col--; $row--; // 1-indexed to 0-indexed.
-		if ($col < 0 || $col >= $this->dim_y || $row < 0 || $row >= $this->dim_x)
+	public function getPiece (int $col, int $row) {
+		$col--; $row--; // To 0-indexed
+		if ($col < 0 || $col >= $this->dim_x || $row < 0 || $row >= $this->dim_y)
 			throw new \Exception('Column or row index out of range');
 
 		return $this->columns[$col][$row] ?? NULL;

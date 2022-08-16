@@ -17,6 +17,7 @@ class BoardTest extends TestCase
      */
 	public function test_valid_dimensions()
 	{
+		// Testing exceptions, no assertions used
 		$this->expectNotToPerformAssertions();
 
 		// Any exception thrown would lead the test to fail.
@@ -44,7 +45,6 @@ class BoardTest extends TestCase
 	
     public function test_dimx_edges_and_rand()
     {
-		// Will only test whether exceptions are thrown or not
 		$this->expectNotToPerformAssertions();
 
 		$try_n = array(1,2,3,4,5);
@@ -78,9 +78,93 @@ class BoardTest extends TestCase
 			}
 		}
     }
-/*	
-	public function test_dimy_one_column()
+	
+	public function test_dimy_rand_height()
 	{
-		$board = (
-	}*/
+		$try_y = array(1,2,3,4,5);
+		for ($i = 0; $i < 3; $i++)
+			$try_y[] = rand(6,20);
+
+		foreach ($try_y as $m) {
+			$board = new Board(20, $m);
+
+			$try_cols = array(1, 20);
+			for ($i = 0; $i < 3; $i++) {
+				$aux = 1;
+				while (in_array($aux, $try_cols))
+					$aux = rand(2,19);
+				$try_cols[] = $aux;
+			}
+
+			foreach ($try_cols as $col) {
+				for ($i = 0; $i < $m; $i++)
+					$this->assertTrue($board->throwPiece(new Piece(rand(0,1)), $col));
+			}
+			$this->assertFalse($board->throwPiece(new Piece(rand(0,1)), $col));
+		}
+	}
+
+	public function test_get_piece_oob()
+	{
+		$this->expectNotToPerformAssertions();
+	
+		$try_nx = array(1,1,1,2,3,2,2,3);
+		$try_ny = array(1,2,3,1,1,2,3,2);
+
+		for ($i = 0; $i < 3; $i++) { // A few more small boards
+			$try_nx[] = rand(2,5);
+			$try_ny[] = rand(2,5);
+		}
+
+		for ($i = 5; $i < 3; $i++) { // A few big boards
+			$try_nx[] = rand(6,20);
+			$try_ny[] = rand(6,20);
+		}
+
+		for ($i = 0; $i < count($try_nx); $i++) {
+			$nx = $try_nx[$i]; $ny = $try_ny[$i];
+			$board = new Board($nx, $ny);
+			
+			$try_xy = array(
+				[0,1], [1,0], [0,0], [$nx+1,1], [1,$ny+1], [0,$ny+1], [$nx+1,0], [rand(1,$nx),0],
+				[rand(1,$nx),$ny+1], [0,rand(1,$ny)], [$nx+1,rand(1,$ny)], [-1,-1], [-1, rand(1,$ny)],
+				[rand(1,$nx), -1]
+			);
+
+			foreach ($try_xy as $pair) {
+				try {
+					$board->getPiece($pair[0], $pair[1]);
+				} catch (\Exception $e) {
+					continue;
+				}
+				$this->fail("Exception not thrown with nx $nx and ny $ny, on col $pair[0] and row $pair[1]");
+			}
+		}
+	}
+
+	public function test_get_pieces_checkerboard()
+	{
+		$try_nx = array(1,1,2,2,1,20,20);
+		$try_ny = array(1,2,1,2,20,1,20);
+
+		for ($t = 0; $t < count($try_nx); $t++) {
+			$nx = $try_nx[$t]; $ny = $try_ny[$t];
+			$board = new Board($nx, $ny);
+
+			for ($i = 1; $i <= $nx; $i++)
+				for ($j = 1; $j <= $ny; $j++)
+					$board->throwPiece(new Piece(($i+$j)%2, $i), $i);
+
+			for ($i = 1; $i <= $nx; $i++)
+				for ($j = 1; $j <= $ny; $j++) {
+					$piece = $board->getPiece($i, $j);
+					$this->assertNotNull($piece);
+					$this->assertEquals($piece->getColor(), ($i+$j)%2);
+				}
+		}
+	}
+
+	// TODO: Test board clean
+	// TODO: Test get pieces with half full board
+	// TODO: Test get pieces with somewhat random distributions (and also maybe clean)
 }
