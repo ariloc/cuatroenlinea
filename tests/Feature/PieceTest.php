@@ -16,25 +16,25 @@ class PieceTest extends TestCase
      */
     public function test_red()
     {
-		$piece = new Piece(0);
+        $piece = new Piece(0);
 
-		$this->assertEquals($piece->getColor(), false);
-		$this->assertEquals($piece->getColorStr(), "Red");
+        $this->assertEquals($piece->getColor(), false);
+        $this->assertEquals($piece->getColorStr(), "Red");
     }
     
-	public function test_blue()
+    public function test_blue()
     {
-		$piece = new Piece(1);
+        $piece = new Piece(1);
 
-		$this->assertEquals($piece->getColor(), true);
-		$this->assertEquals($piece->getColorStr(), "Blue");
+        $this->assertEquals($piece->getColor(), true);
+        $this->assertEquals($piece->getColorStr(), "Blue");
     }
 
-	public function test_default_red()
-	{
-		$piece = new Piece();
+    public function test_default_red()
+    {
+        $piece = new Piece();
 
-		$this->assertEquals($piece->getColor(), false);
-		$this->assertEquals($piece->getColorStr(), "Red");
-	}
+        $this->assertEquals($piece->getColor(), false);
+        $this->assertEquals($piece->getColorStr(), "Red");
+    }
 }
