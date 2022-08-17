@@ -3,16 +3,18 @@
 namespace App;
 
 use App\Piece;
-use App\Execeptions;
 
 interface BoardInterface {
 	public function throwPiece (Piece $piece, int $col) : bool;
-	public function getPiece (int $col, int $row); // can return Piece or NULL
+	public function getPiece (int $col, int $row) : ?Piece; // can return Piece or NULL if empty
 	public function clean() : void;
+	public function undo() : bool;
+	public function getDimX() : int;
+	public function getDimY() : int;
 }
 
 class Board implements BoardInterface {
-	protected array $columns;
+	protected array $columns, $history;
 	protected int $dim_x, $dim_y;
 
 	/**
@@ -40,6 +42,7 @@ class Board implements BoardInterface {
 			return false;
 
 		$this->columns[$col][] = $piece;
+		$history[] = $col;
 		return true;
 	}
 
@@ -47,7 +50,7 @@ class Board implements BoardInterface {
      * Gets the Piece object in column $col and row $row.
 	 * If no piece exists in that position, returns NULL.
      */
-	public function getPiece (int $col, int $row) {
+	public function getPiece (int $col, int $row) : ?Piece {
 		$col--; $row--; // To 0-indexed
 		if ($col < 0 || $col >= $this->dim_x || $row < 0 || $row >= $this->dim_y)
 			throw new \Exception('Column or row index out of range');
@@ -61,6 +64,30 @@ class Board implements BoardInterface {
 	public function clean() : void {
 		for ($i = 0; $i < $this->dim_x; $i++)
 			$this->columns[$i] = [];
+		$history = [];
+	}
+
+	public function undo() : bool {
+		if (empty($history))
+			return false;
+
+		array_pop($board[ end($history) ]);
+		array_pop($history);
+		return true;
+	}
+
+	/**
+	 * Get set column count.
+	 */
+	public function getDimX() : int {
+		return $this->dim_x;
+	}
+
+	/**
+	 * Get set row count (height).
+	 */
+	public function getDimY() : int {
+		return $this->dim_y;
 	}
 }
 

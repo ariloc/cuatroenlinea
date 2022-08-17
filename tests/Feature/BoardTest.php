@@ -153,7 +153,7 @@ class BoardTest extends TestCase
 
 			for ($i = 1; $i <= $nx; $i++)
 				for ($j = 1; $j <= $ny; $j++)
-					$board->throwPiece(new Piece(($i+$j)%2, $i), $i);
+					$board->throwPiece(new Piece(($i+$j)%2), $i);
 
 			for ($i = 1; $i <= $nx; $i++)
 				for ($j = 1; $j <= $ny; $j++) {
@@ -164,7 +164,49 @@ class BoardTest extends TestCase
 		}
 	}
 
+	public function test_get_pieces_rand()
+	{
+		$try_nx = array(20,19,20);
+		$try_ny = array(20,20,19);
+
+		for ($t = 0; $t < count($try_nx); $t++) {
+			$nx = $try_nx[$t]; $ny = $try_ny[$t];
+			$board = new Board($nx, $ny);
+
+			$game = array_fill(1, $nx, array_fill(1, $ny, NULL));
+
+			for ($i = 1; $i <= $nx; $i++) {
+				$col_n = rand(0,$ny);
+				for ($j = 1; $j <= $col_n; $j++) {
+					$piece = new Piece(rand(0,1));
+					$board->throwPiece($piece, $i); // throw piece
+					$this->assertEquals($board->getPiece($i, $j), $piece); // check for piece
+					$game[$i][$j] = $piece;
+				}
+			}
+
+			// check for all pieces
+			for ($i = 1; $i <= $nx; $i++)
+				for ($j = 1; $j <= $ny; $j++)
+					$this->assertEquals($board->getPiece($i, $j), $game[$i][$j]);			
+		}
+	}
+
+	public function test_default_empty_board()
+	{
+		$board = new Board();
+
+		for ($i = 1; $i <= $board->getDimX(); $i++)
+			for ($j = 1; $j <= $board->getDimY(); $j++)
+				$this->assertEquals($board->getPiece($i, $j), NULL);
+	}
+
+	public function test_board_clean()
+	{
+		
+	}
+
 	// TODO: Test board clean
-	// TODO: Test get pieces with half full board
 	// TODO: Test get pieces with somewhat random distributions (and also maybe clean)
+	// TODO: Test undo
 }
