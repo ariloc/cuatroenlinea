@@ -108,15 +108,15 @@ class BoardTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
     
-        $try_nx = array(1,1,1,2,3,2,2,3);
-        $try_ny = array(1,2,3,1,1,2,3,2);
+        $try_nx = array(1,1,1,2,3,2,2,3,1,20);
+        $try_ny = array(1,2,3,1,1,2,3,2,20,1);
 
         for ($i = 0; $i < 3; $i++) { // A few more small boards
             $try_nx[] = rand(2,5);
             $try_ny[] = rand(2,5);
         }
 
-        for ($i = 5; $i < 3; $i++) { // A few big boards
+        for ($i = 5; $i < 3; $i++) { // A few bigger boards
             $try_nx[] = rand(6,20);
             $try_ny[] = rand(6,20);
         }
@@ -203,10 +203,36 @@ class BoardTest extends TestCase
 
     public function test_board_clean()
     {
-        
+        $try_nx = array(1,2,1,2,20,1,20);
+        $try_ny = array(1,1,2,2,20,20,1);
+
+        for ($i = 0; $i < 5; $i++) {
+            $try_nx[] = rand(1,20);
+            $try_ny[] = rand(1,20);
+        }
+
+        for ($t = 0; $t < count($try_nx); $t++) {
+            $nx = $try_nx[$t]; $ny = $try_ny[$t];
+            $toThrow = rand(max(0, $nx * $ny - 10), $nx * $ny + 10);
+            $board = new Board($nx, $ny);
+            
+            for ($i = 0; $i < $toThrow; $i++) {
+                $board->throwPiece(new Piece(rand(0,1)), rand(1,$nx));
+            }
+
+            $board->clean();
+
+            for ($i = 1; $i <= $nx; $i++)
+                for ($j = 1; $j <= $ny; $j++)
+                    $this->assertEquals($board->getPiece($i, $j), NULL);
+        }
     }
 
-    // TODO: Test board clean
+    public function test_undo()
+    {
+
+    }
+
     // TODO: Test get pieces with somewhat random distributions (and also maybe clean)
     // TODO: Test undo
 }
