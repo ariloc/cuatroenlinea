@@ -42,7 +42,7 @@ class Board implements BoardInterface {
             return false;
 
         $this->columns[$col][] = $piece;
-        $history[] = $col;
+        $this->history[] = $col;
         return true;
     }
 
@@ -64,15 +64,17 @@ class Board implements BoardInterface {
     public function clean() : void {
         for ($i = 0; $i < $this->dim_x; $i++)
             $this->columns[$i] = [];
-        $history = [];
+        $this->history = [];
     }
 
+    /**
+     * Undo the last movement.
+     */
     public function undo() : bool {
-        if (empty($history))
+        if (empty($this->history))
             return false;
 
-        array_pop($board[ end($history) ]);
-        array_pop($history);
+        array_pop($this->columns[ array_pop($this->history) ]);
         return true;
     }
 

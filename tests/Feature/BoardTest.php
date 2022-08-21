@@ -227,12 +227,142 @@ class BoardTest extends TestCase
                     $this->assertEquals($board->getPiece($i, $j), NULL);
         }
     }
-
-    public function test_undo()
+    
+    public function test_undo_1()
     {
+        // using default board and other sizes
+        $try_board = array(new Board(), new Board(1,10), new Board(10,1), new Board(1,1));
+        for ($i = 0; $i < 3; $i++)
+            $try_board[] = new Board(rand(1,20), rand(1,20));
 
+        // iterate boards
+        for ($b = 0; $b < count($try_board); $b++) {
+            $board = $try_board[$b];
+
+            $nx = $board->getDimX(); $ny = $board->getDimY();
+            $total_pieces = $nx * $ny;
+    
+            // list all movements to fill board
+            $movs = [];
+            for ($c = 1; $c <= $nx; $c++)
+                for ($r = 1; $r <= $ny; $r++)
+                    $movs[] = $c;
+
+            // shuffle movements randomly
+            shuffle($movs);
+
+            $undos_n = rand(1,20); // amount of undos to do
+
+            // choose columns to throw a Piece and then undo the action
+            $undos_per_col = array_fill(1, $nx, 0);
+            for ($i = 0; $i < $undos_n; $i++) {
+                $selected_col = rand(1, $nx);
+                $undos_per_col[$selected_col]++;
+            }
+
+            // choose randomly when to perform the throw & undos
+            $acc_col = array_fill(1, $nx, 0);
+            for ($i = 0; $i < count($movs); $i++) {
+                $act = $movs[$i];
+
+                if ($act < 0) continue; // skip if it's a throw & undo movement
+
+                $acc_col[$act]++; // count amount of Piece in each column up to this point
+
+                // all add & undo should be done before the column full
+                if ($acc_col[$act] == $ny) { 
+                    $cnt = $undos_per_col[$act];
+                    $undos_per_col[$act] = 0;
+
+                    // new element can be between start and current position
+                    // (before column is full)
+                    for ($shift = 0; $shift < $cnt; $shift++) {
+                        array_splice($movs, rand(0, $i + $shift), 0, - $act);
+                    }
+                    
+                    // update current index (-1 because "for" will increment it)
+                    $i += max(0, $cnt-1); 
+                }
+            }
+
+            // throw Piece according to movs array
+            $col_len = array_fill(1, $nx, 0);
+            $game = array_fill(1, $nx, array_fill(1, $ny, NULL));
+            for ($i = 0; $i < count($movs); $i++) {
+                $col_throw = abs($movs[$i]);
+
+                // Piece color is determined by turn, just like the real game
+                $board->throwPiece(new Piece($i % 2), $col_throw);
+
+                // add Piece to game array if it's not to be undone
+                if ($movs[$i] > 0)
+                    $game[$col_throw][++$col_len[$col_throw]] = new Piece($i % 2);
+                else {
+                    $board->undo(); // undo movement
+
+                    // check against board without last movement
+                    for ($c = 1; $c <= $nx; $c++)
+                        for ($r = 1; $r <= $ny; $r++)
+                            $this->assertEquals($board->getPiece($c, $r), $game[$c][$r]);
+                }
+            }
+        }
     }
 
-    // TODO: Test get pieces with somewhat random distributions (and also maybe clean)
-    // TODO: Test undo
+    public function test_undo_oob()
+    {
+        $try_board = array(new Board(), new Board(1,1), new Board(2,1), new Board(1,2), new Board(20,20), new Board(1,20));
+        for ($i = 0; $i < 3; $i++)
+            $try_board[] = new Board(rand(1,20), rand(1,20));
+
+        for ($b = 0; $b < count($try_board); $b++) {
+            $board = $try_board[$b];
+
+            $nx = $board->getDimX(); $ny = $board->getDimY();
+            $total_pieces = $nx * $ny;
+
+            $try_initial = array();
+            
+            // first 0-5 if possible
+            for ($i = 0; $i < min(5, $total_pieces); $i++)
+                $try_initial[] = $i;
+
+            // other random initial for bigger boards
+            if ($total_pieces > 5)
+                for ($i = 0; $i < 3; $i++)
+                    $try_initial[] = rand(6, $total_pieces);
+
+            // throw amount of initial pieces, undo more than thrown
+            for ($i = 0; $i < count($try_initial); $i++) {
+                $throw_n = $try_initial[$i]; // to throw
+                $undo_n = rand(1,20); // additional to undo after throws
+
+                $avail_col = array();
+                for ($j = 1; $j <= $nx; $j++)
+                    $avail_col[] = $j;
+
+                $col_len = array_fill(1, $nx, 0);
+                for ($j = 0; $j < $throw_n; $j++) {
+                    // select random column not yet filled
+                    $throw_idx = rand(0, count($avail_col)-1);
+                    $col = $avail_col[$throw_idx];
+
+                    // it should always be possible to throw this Piece
+                    $this->assertTrue($board->throwPiece(new Piece(rand(0,1)), $col));
+
+                    // remove column from list of available ones when it's full
+                    if ((++$col_len[$col]) >= $ny)
+                        array_splice($avail_col, array_search($col, $avail_col), 1);
+                }
+
+                // undo all movements
+                while ($throw_n--)
+                    $this->assertTrue($board->undo());
+
+                // perform additional "oob" undos
+                while ($undo_n--)
+                    $this->assertFalse($board->undo());
+            }
+        }
+    }
 }
