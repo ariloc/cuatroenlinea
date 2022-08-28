@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Board;
-
 interface BoardWinnerInterface {
     public function setBoard (Board $board) : void;
     public function getWinner() : ?array;

@@ -1,14 +1,11 @@
 <?php
 
 namespace Tests\Feature;
+namespace App;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-
-use App\BoardWinner;
-use App\Board;
-use App\Piece;
 
 class BoardWinnerTest extends TestCase
 {
@@ -181,8 +178,6 @@ class BoardWinnerTest extends TestCase
          *  R R B B B R R
          */
 
-        $board = new Board(7,6);
-        
         $arr = array(
             array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
             array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -206,6 +201,158 @@ class BoardWinnerTest extends TestCase
         json_encode($win));
     }
 
+    public function test_diagonal_ne_fixed_1() {
+        /*
+         *  - - - - - B -
+         *  - - - - B R -
+         *  - - - B R R -
+         *  - - B R R R -
+         *  - - B R B B -
+         *  - - B B R R -
+         */
+
+        $arr = array(
+            array(NULL, NULL, NULL, NULL, NULL, 1,    NULL),
+            array(NULL, NULL, NULL, NULL, 1,    0,    NULL),
+            array(NULL, NULL, NULL, 1,    0,    0,    NULL),
+            array(NULL, NULL, 1,    0,    0,    0,    NULL),
+            array(NULL, NULL, 1,    0,    1,    1,    NULL),
+            array(NULL, NULL, 1,    1,    0,    1,    NULL)
+        );
+        $board = $this->_boardFromArray($arr);
+
+        $this->_compareWinners($board, array([3,3],[4,4],[5,5],[6,6]));
+    }
+
+    public function test_diagonal_ne_fixed_2() {
+        /*
+         *  - B - R - - -
+         *  - B R R - - -
+         *  R R B B - - -
+         *  R B R B - - -
+         *  B R B R - - -
+         *  R B R B - - -
+         */
+
+        $arr = array(
+            array(NULL, 1,    NULL, 0,    NULL, NULL, NULL),
+            array(NULL, 1,    0,    0,    NULL, NULL, NULL),
+            array(0,    0,    1,    1,    NULL, NULL, NULL),
+            array(0,    1,    0,    1,    NULL, NULL, NULL),
+            array(1,    0,    1,    0,    NULL, NULL, NULL),
+            array(0,    1,    0,    1,    NULL, NULL, NULL)
+        );
+        $board = $this->_boardFromArray($arr);
+
+        $this->_compareWinners($board, array([1,3],[2,4],[3,5],[4,6]));
+    }
+
+    public function test_diagonal_ne_fixed_3() {
+        /*
+         *  - - - - - - -
+         *  - - - - - - -
+         *  - - - - - - B
+         *  - - - - - B R
+         *  - - - - B R R
+         *  - - - B R R R
+         */
+
+        $arr = array(
+            array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+            array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+            array(NULL, NULL, NULL, NULL, NULL, NULL, 1   ),
+            array(NULL, NULL, NULL, NULL, NULL, 1,    0   ),
+            array(NULL, NULL, NULL, NULL, 1,    0,    0   ),
+            array(NULL, NULL, NULL, 1,    0,    0,    0   )
+        );
+        $board = $this->_boardFromArray($arr);
+
+        $this->_compareWinners($board, array([4,1],[5,2],[6,3],[7,4]));
+    }
+
+    public function test_diagonal_nw_fixed_1() {
+        /*
+         *  - - - - - - -
+         *  - - - - - - -
+         *  - - - R - - -
+         *  - - - B R - -
+         *  - - - R B R -
+         *  - - - B B B R
+         */
+
+        $arr = array(
+            array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+            array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+            array(NULL, NULL, NULL, 0,    NULL, NULL, NULL),
+            array(NULL, NULL, NULL, 1,    0,    NULL, NULL),
+            array(NULL, NULL, NULL, 0,    1,    0,    NULL),
+            array(NULL, NULL, NULL, 1,    1,    1,    0   )
+        );
+        $board = $this->_boardFromArray($arr);
+
+        $this->_compareWinners($board, array([7,1],[6,2],[5,3],[4,4]));
+    }
+
+    public function test_diagonal_nw_fixed_2() {
+        /*
+         *  - - - B - - -
+         *  - - - R B R B
+         *  - B R R B B R
+         *  - R B B R R B
+         *  B B R R B B R
+         *  R R B B R R B
+         */
+
+        $arr = array(
+            array(NULL, NULL, NULL, 1,    NULL, NULL, NULL),
+            array(NULL, NULL, NULL, 0,    1,    0,    1   ),
+            array(NULL, 1,    0,    0,    1,    1,    0   ),
+            array(NULL, 0,    1,    1,    0,    0,    1   ),
+            array(1,    1,    0,    0,    1,    1,    0   ),
+            array(0,    0,    1,    1,    0,    0,    1   )
+        );
+        $board = $this->_boardFromArray($arr);
+
+        $this->_compareWinners($board, array([4,6],[5,5],[6,4],[7,3]));
+    }
+
+    public function test_diagonal_nw_fixed_3() {
+        /*
+         *  - - - - - - -
+         *  - - - - - - -
+         *  R - - - - - -
+         *  B R - - - - R
+         *  B B R - - R B
+         *  B B B R R B B
+         */
+
+        $arr = array(
+            array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+            array(NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+            array(0   , NULL, NULL, NULL, NULL, NULL, NULL),
+            array(1   , 0,    NULL, NULL, NULL, NULL, 0   ),
+            array(1,    1,    0,    NULL, NULL, 0,    1   ),
+            array(1,    1,    1,    0,    0,    1,    1   )
+        );
+        $board = $this->_boardFromArray($arr);
+
+        $this->_compareWinners($board, array([1,4],[2,3],[3,2],[4,1]));
+    }
+
+    public function test_game_fixed_1() {
+        // A game with my brother (he won)
+        $sequence = array(4,1,5,2,3,6,3,3,4,2,6,5,5,4,4,3);
+        
+        $board = new Board(7,6);
+        foreach ($sequence as $idx => $move) {
+            $board_winner = new BoardWinner($board);
+            $this->assertNull($board_winner->getWinner());
+            $board->throwPiece(new Piece($idx % 2), $move);
+        }
+        
+        $this->_compareWinners($board, array([3,4],[4,3],[5,2],[6,1]));
+    }
+
     private function _compareWinners (Board $board, ?array $intended_win) {
         $board_winner = new BoardWinner($board);
         $win = $board_winner->getWinner();
@@ -218,7 +365,11 @@ class BoardWinnerTest extends TestCase
     }
 
     private function _arrayOfCoordsCmp($lhs, $rhs) {
-        return !($lhs == $rhs);
+        if ($lhs == $rhs)
+            return 0;
+        if ($lhs[0] < $rhs[0] || ($lhs[0] == $rhs[0] && $lhs[1] < $rhs[1]))
+            return -1;
+        return 1;
     }
     
     private function _boardFromArray (array $board_arr) {

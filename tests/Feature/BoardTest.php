@@ -1,12 +1,11 @@
 <?php
 
 namespace Tests\Feature;
+namespace App;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Board;
-use App\Piece;
 
 class BoardTest extends TestCase
 {
