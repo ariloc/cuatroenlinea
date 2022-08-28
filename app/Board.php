@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Piece;
-
 interface BoardInterface {
     public function throwPiece (Piece $piece, int $col) : bool;
     public function getPiece (int $col, int $row) : ?Piece; // can return Piece or NULL if empty
