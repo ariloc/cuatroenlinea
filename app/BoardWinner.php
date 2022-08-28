@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Board;
+use App\Board;
 
 interface BoardWinnerInterface {
     public function setBoard (Board $board) : void;
@@ -66,7 +66,14 @@ class BoardWinner implements BoardWinnerInterface {
         return NULL;
     }
 
-    private function _checkWinnerDirection (int $st_x, int $st_y, int $inc_x, int $inc_y) {
+    private function _checkWinnerDirection (int $st_x, int $st_y, int $inc_x, int $inc_y) : ?array {
+        // Anonymous function for counting colors from board, or avoid errors if there's no piece 
+        $add_from_board = function (array &$cnt, int $x, int $y, int $add) {
+            $act = $this->board->getPiece($x, $y);
+            if (!is_null($act))
+                $cnt[ $act->getColor() ] += $add;
+        };
+
         $nx = $this->board->getDimX();
         $ny = $this->board->getDimY();
 
@@ -75,15 +82,17 @@ class BoardWinner implements BoardWinnerInterface {
         for ($x = $st_x, $y = $st_y; ($x >= 1 && $x <= $nx) && ($y >= 1 && $y <= $ny); $x += $inc_x, $y += $inc_y) {
             $explored[] = [$x, $y];
 
-            $cnt[ $this->board->getPiece($x, $y)->getColor() ]++;
+            $add_from_board($cnt, $x, $y, 1);
             if (count($explored) > self::CONSECUTIVE_PIECES) {
                 list($prv_x, $prv_y) = $explored[count($explored) - self::CONSECUTIVE_PIECES - 1];
-                $cnt [$this->board->getPiece($prv_x, $prx_y)->getColor() ]--;
+                $add_from_board($cnt, $prv_x, $prv_y, -1);
             }
 
             if ($cnt[0] == self::CONSECUTIVE_PIECES || $cnt[1] == self::CONSECUTIVE_PIECES)
                 return array_slice($explored, -self::CONSECUTIVE_PIECES);
         }
+
+        return NULL;
     }
 }
 
