@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get('/jugar/{secuencia}', function ($secuencia) {
+  $validator = new SequenceValidator();
+  $validator->validateSequence($secuencia);
+
   $secuencia_anterior = $secuencia;
   $secuencia = str_split($secuencia);
   $tablero = [
