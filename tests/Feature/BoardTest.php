@@ -7,6 +7,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+use App\Exceptions\BoardDimensionsException;
+use App\Exceptions\BoardOobException;
+
 class BoardTest extends TestCase
 {
     /**
@@ -35,10 +38,10 @@ class BoardTest extends TestCase
         for ($i = 0; $i < count($try_x); $i++) {
             try {
                 $board = new Board($try_x[$i], $try_y[$i]);
-            } catch (\Exception $e) {
+            } catch (BoardDimensionsException $e) {
                 continue;
             }
-            $this->fail("No exception thrown with dimx, dimy = " . $try_x[$i] . ", " . $try_y[$i]);
+            $this->fail("Incorrect exception or no exception thrown with dimx, dimy = " . $try_x[$i] . ", " . $try_y[$i]);
         }
     }
     
@@ -70,10 +73,10 @@ class BoardTest extends TestCase
             foreach ($to_try as $x) { // invalid positions
                 try {
                     $board->throwPiece(new Piece(rand(0,1)), $x);
-                } catch (\Exception $e) {
+                } catch (BoardOobException $e) {
                     continue;
                 }
-                $this->fail("No exception thrown with dimx $n, piece thrown at $x");
+                $this->fail("Incorrect exception or no exception thrown with dimx $n, piece thrown at $x");
             }
         }
     }
@@ -133,10 +136,10 @@ class BoardTest extends TestCase
             foreach ($try_xy as $pair) {
                 try {
                     $board->getPiece($pair[0], $pair[1]);
-                } catch (\Exception $e) {
+                } catch (BoardOobException $e) {
                     continue;
                 }
-                $this->fail("Exception not thrown with nx $nx and ny $ny, on col $pair[0] and row $pair[1]");
+                $this->fail("Incorrect exception or no exception thrown with nx $nx and ny $ny, on col $pair[0] and row $pair[1]");
             }
         }
     }
