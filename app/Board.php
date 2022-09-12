@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Exceptions\BoardDimensionsException;
+use App\Exceptions\BoardOobException;
+
 interface BoardInterface {
     public function throwPiece (Piece $piece, int $col) : bool;
     public function getPiece (int $col, int $row) : ?Piece; // can return Piece or NULL if empty
@@ -20,7 +23,7 @@ class Board implements BoardInterface {
      */
     public function __construct (int $dim_x = 7, int $dim_y = 6) {
         if ($dim_x <= 0 || $dim_y <= 0)
-            throw new \Exception('Board dimensions must be positive.');
+            throw new BoardDimensionsException('Board dimensions must be positive.');
 
         $this->dim_x = $dim_x;
         $this->dim_y = $dim_y;
@@ -34,7 +37,7 @@ class Board implements BoardInterface {
     public function throwPiece (Piece $piece, int $col) : bool {
         $col--; // 1-indexed to 0-indexed
         if ($col < 0 || $col >= $this->dim_x)
-            throw new \Exception('Column index out of range.');
+            throw new BoardOobException('Column index out of range.');
 
         if (count($this->columns[$col]) >= $this->dim_y)
             return false;
@@ -51,7 +54,7 @@ class Board implements BoardInterface {
     public function getPiece (int $col, int $row) : ?Piece {
         $col--; $row--; // To 0-indexed
         if ($col < 0 || $col >= $this->dim_x || $row < 0 || $row >= $this->dim_y)
-            throw new \Exception('Column or row index out of range');
+            throw new BoardOobException('Column or row index out of range');
 
         return $this->columns[$col][$row] ?? NULL;
     }
